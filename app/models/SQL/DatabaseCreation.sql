@@ -1,6 +1,6 @@
 ﻿CREATE TYPE Rights AS ENUM ('Read-Only', 'Read-Write', 'Full');
 
-CREATE TABLE Groups(
+CREATE TABLE IF NOT EXISTS Groups(
 	ID SERIAL,
 	Name VARCHAR(50),
 	CurrentRights RIGHTS,
@@ -8,7 +8,7 @@ CREATE TABLE Groups(
 	PRIMARY KEY (ID)
 );
 
-CREATE TABLE Users(
+CREATE TABLE IF NOT EXISTS Users(
 	ID SERIAL,
 	Login VARCHAR(50),
 	Password VARCHAR(256),
@@ -19,7 +19,7 @@ CREATE TABLE Users(
 	FOREIGN KEY (GroupID) REFERENCES Groups(ID)
 );
 
-CREATE TABLE Sessions(
+CREATE TABLE IF NOT EXISTS Sessions(
 	ID SERIAL,
 	UserID INT,
 	Device VARCHAR(100),
