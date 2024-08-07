@@ -1,9 +1,11 @@
-﻿from src.apps.admin.database.models.group import Group
+﻿import pathlib
+
+from src.apps.admin.database.models.group import Group
 from src.apps.common.database.utils import execute_and_fetchone, execute_and_fetchall
 
 
 def get_all_groups() -> tuple[Group]:
-    file = './SQL/select_group_by_id.sql'
+    file = 'select_group_by_id.sql'
     values = execute_and_fetchall(file)
 
     groups: list[Group] = []
@@ -15,7 +17,7 @@ def get_all_groups() -> tuple[Group]:
 
 
 def get_group_by_id(group_id) -> Group | None:
-    file = './SQL/select_group_by_id.sql'
+    file = 'select_group_by_id.sql'
     params = (group_id,)
     value = execute_and_fetchone(file, params)
 
