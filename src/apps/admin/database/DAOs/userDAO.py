@@ -67,4 +67,17 @@ def update_user(updated_user: User) -> bool:
 
 
 def delete_user(user: User) -> bool:
-    raise NotImplementedError
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(read_sql_file('delete_user.sql'), (user.id,))
+
+    except Exception as e:
+        print(e)
+        return False
+
+    else:
+        return True
+
+    finally:
+        cursor.close()
