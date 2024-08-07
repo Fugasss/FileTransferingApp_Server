@@ -1,0 +1,5 @@
+﻿SQL_HOST=localhost
+SQL_PORT=5432
+SQL_DATABASE_NAME=test
+SQL_USER=postgres
+SQL_PASSWORD=postgres
