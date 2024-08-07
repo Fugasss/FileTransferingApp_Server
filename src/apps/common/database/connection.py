@@ -5,8 +5,6 @@ import psycopg2 as pg
 from psycopg2._psycopg import cursor
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from src.apps.common.database.utils import read_sql_file
-
 __connection: pg._psycopg.connection | None = None
 
 
@@ -29,7 +27,8 @@ def __create_database(cursor, name: str):
 
 
 def __create_tables(cursor):
-    cursor.execute(read_sql_file('SQL/create_necessary_tables.sql'))
+    from src.apps.common.database.utils import read_sql_file
+    cursor.execute(read_sql_file('create_necessary_tables.sql'))
 
 
 def get_or_create_connection():
@@ -68,8 +67,3 @@ def get_cursor():
     if conn is None:
         return
     return conn.cursor()
-
-
-if __name__ == '__main__':
-    dotenv.load_dotenv("./.env")
-    get_cursor()
