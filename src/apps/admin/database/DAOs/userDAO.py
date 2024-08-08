@@ -1,7 +1,7 @@
 ﻿from src.apps.admin.database.models.user import User
 from src.apps.admin.database.models.group import Group
 from src.apps.admin.security import hasher
-from src.apps.common.database.utils import execute_and_fetchall, execute_and_fetchone
+from src.apps.common.database.db_utils import execute_and_fetchone, execute_and_fetchall
 from src.apps.common.database.connection import get_cursor
 from src.apps.admin.database.DAOs.groupDAO import get_group_by_id
 from src.apps.common.database.utils import read_sql_file
