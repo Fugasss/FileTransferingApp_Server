@@ -1,7 +1,6 @@
 ﻿import os.path
 import typing
 
-from .connection import get_cursor
 from src.settings import SQL_DIRS
 
 
@@ -25,17 +24,3 @@ def read_sql_file(sql_file):
         return f.read()
 
 
-def execute_and_fetchone(sql_file, vars: typing.Sequence | None = None):
-    with get_cursor() as cursor:
-        cursor.execute(read_sql_file(sql_file), vars)
-        value = cursor.fetchone()
-
-    return value
-
-
-def execute_and_fetchall(sql_file, vars: typing.Sequence | None = None):
-    with get_cursor() as cursor:
-        cursor.execute(read_sql_file(sql_file), vars)
-        value = cursor.fetchall()
-
-    return value

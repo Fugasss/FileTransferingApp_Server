@@ -1,11 +1,12 @@
 import os
 
 import dotenv
-import psycopg2 as pg
-from psycopg2._psycopg import cursor
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import psycopg as pg
+from psycopg import cursor
 
-__connection: pg._psycopg.connection | None = None
+from src import settings
+
+__connection: pg.connection.Connection | None = None
 
 
 def __database_exists(cursor, name: str) -> bool:
@@ -29,21 +30,23 @@ def __create_database(cursor, name: str):
 def __create_tables(cursor):
     from src.apps.common.database.utils import read_sql_file
     cursor.execute(read_sql_file('create_necessary_tables.sql'))
+    cursor.execute(read_sql_file('insert_necessary_data.sql'))
 
 
 def get_or_create_connection():
     global __connection
 
-    name = os.environ.get("SQL_DATABASE_NAME", 'FileTransferingApp')
-    host = os.environ.get("SQL_HOST", 'localhost')
-    port = os.environ.get("SQL_PORT", '5432')
-    user = os.environ.get("SQL_USER", 'postgres')
-    password = os.environ.get("SQL_PASSWORD", 'postgres')
+    options = settings.DATABASE_CONNECTION_OPTIONS
+    host = options['HOST']
+    name = options['NAME']
+    port = options['PORT']
+    user = options['USER']
+    password = options['PASSWORD']
 
     if __connection is None:
-        conn = pg.connect(host=host, port=port, user=user, password=password)
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        conn: pg.connection.Connection = pg.connect(host=host, port=port, user=user, password=password)
         conn.autocommit = True
+        conn.set_isolation_level(pg.connection.IsolationLevel.READ_UNCOMMITTED)
 
         cursor = conn.cursor()
 
@@ -53,7 +56,7 @@ def get_or_create_connection():
         cursor.close()
         conn.close()
 
-        __connection = pg.connect(database=name, host=host, port=port, user=user, password=password)
+        __connection = pg.connect(dbname=name, host=host, port=port, user=user, password=password)
         __connection.autocommit = True
 
         with __connection.cursor() as cursor:
