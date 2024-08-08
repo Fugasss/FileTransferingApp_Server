@@ -10,12 +10,13 @@ router = APIRouter()
 
 @router.post('/login')
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    print("login user")
     user = get_user_by_login(username)
 
     if user is None:
         return {"code": 404, "message": "User not found"}
 
-    if user.password == hash_password(password, user.salt):
+    if user.password == hash_password(password, user.salt)[1]:
         return {"code": 200, "message": "Login successful"}
     else:
         return {"code": 403, "message": "Access denied"}
