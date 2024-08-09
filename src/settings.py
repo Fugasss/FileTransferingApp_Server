@@ -8,9 +8,5 @@ SQL_DIRS = [
 ]
 
 DATABASE_CONNECTION_OPTIONS = {
-    'NAME': os.environ.get("SQL_DATABASE_NAME", 'FileTransferingApp'),
-    'HOST': os.environ.get("SQL_HOST", 'localhost'),
-    'PORT': os.environ.get("SQL_PORT", '5432'),
-    'USER': os.environ.get("SQL_USER", 'postgres'),
-    'PASSWORD': os.environ.get("SQL_PASSWORD", 'postgres'),
+    'NAME': os.environ.get("SQL_DATABASE_NAME", 'data.db'),
 }

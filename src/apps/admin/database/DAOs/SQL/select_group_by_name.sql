@@ -1,2 +1,2 @@
 SELECT * FROM groups
-WHERE name=%s;
+WHERE name=?;
