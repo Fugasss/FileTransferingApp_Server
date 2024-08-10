@@ -11,8 +11,7 @@ async def upload_file(file: UploadFile = File(...)):
     cursor = get_cursor()
     try:
         file_data = await file.read()
-
-        cursor.execute(read_sql_file('create_file.sql'), (file.filename, file_data))
+        cursor.execute(read_sql_file('create_file.sql'), (file.filename, file.size, file_data))
 
         file_id = cursor.lastrowid
         return ORJSONResponse([{"message": "file uploaded successfully", "file_id": file_id}])

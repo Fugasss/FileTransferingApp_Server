@@ -1,2 +1,2 @@
-INSERT INTO files (filename, data)
-VALUES (?, ?);
+INSERT INTO files (filename, size, data)
+VALUES (?, ?, ?);
