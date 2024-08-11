@@ -6,6 +6,7 @@ from fastapi import File, UploadFile, HTTPException
 
 router = APIRouter()
 
+
 @router.post('/upload')
 async def upload_file(file: UploadFile = File(...)):
     cursor = get_cursor()
@@ -21,4 +22,3 @@ async def upload_file(file: UploadFile = File(...)):
 
     finally:
         cursor.close()
-
