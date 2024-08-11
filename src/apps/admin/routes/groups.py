@@ -16,7 +16,7 @@ from src.apps.admin.database.models.rights import Rights
 
 router = APIRouter()
 
-@router.get('/admin/groups/{id}')
+@router.get('/groups/{id}')
 def get_group(id: int):
     group = get_group_by_id_dao(id)
 
