@@ -7,7 +7,7 @@ from src.apps.admin.database.DAOs.groupDAO import get_group_by_id, get_group_by_
 from src.apps.common.database.utils import read_sql_file
 
 
-def get_all_users() -> tuple[User] | None:
+def get_all_users() -> tuple[User, ...]:
     users: list[User] = []
     data = execute_and_fetchall('select_all_users.sql')
 
@@ -16,7 +16,7 @@ def get_all_users() -> tuple[User] | None:
         user = User(id=row[0], login=row[1], password=row[2], salt=row[3], group=group)
         users.append(user)
 
-    return tuple(*users)
+    return tuple(users)
 
 
 def get_user_by_login(login) -> User | None:

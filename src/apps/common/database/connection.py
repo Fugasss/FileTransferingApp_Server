@@ -19,9 +19,6 @@ def get_or_create_connection():
         name = options['NAME']
 
         __connection = sqlite.connect(database=name, isolation_level="IMMEDIATE", check_same_thread=False)
-        __connection.close()
-
-        __connection = sqlite.connect(database=name, isolation_level="IMMEDIATE", check_same_thread=False)
 
         with contextlib.closing(__connection.cursor()) as cursor:
             cursor.execute(read_sql_file('check_for_tables_existance.sql'))

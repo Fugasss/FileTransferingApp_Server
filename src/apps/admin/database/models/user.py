@@ -1,8 +1,9 @@
-﻿from pydantic import BaseModel
+﻿import dataclasses
 from src.apps.admin.database.models.group import Group
 
 
-class User(BaseModel):
+@dataclasses.dataclass
+class User:
     id: int
     login: str
     password: str

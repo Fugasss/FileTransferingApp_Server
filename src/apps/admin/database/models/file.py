@@ -1,5 +1,7 @@
-from pydantic import BaseModel
+import dataclasses
 
-class File(BaseModel):
+
+@dataclasses.dataclass
+class File:
     name: str
     size: int
