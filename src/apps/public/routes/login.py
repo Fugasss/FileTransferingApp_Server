@@ -3,16 +3,21 @@
 from src.apps.admin.database.DAOs.userDAO import get_all_users
 from fastapi import APIRouter, Form
 from typing import Annotated
+from src.apps.admin.database.DAOs.userDAO import get_user_by_login
+from src.apps.admin.security.hasher import hash_password
 
 router = APIRouter()
 
 
 @router.post('/login')
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    users = get_all_users()
+    print("login user")
+    user = get_user_by_login(username)
 
-    for user in users:
-        if user.check_login_password(username, password):
-            return {"code": 0, "message": "Access accepted"}
+    if user is None:
+        return {"code": 404, "message": "User not found"}
 
-    return {"code": 1, "message": "Access denied"}
+    if user.password == hash_password(password, user.salt)[1]:
+        return {"code": 200, "message": "Login successful"}
+    else:
+        return {"code": 403, "message": "Access denied"}
