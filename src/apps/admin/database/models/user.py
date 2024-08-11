@@ -7,4 +7,5 @@ class User(BaseModel):
     id: int
     login: str
     password: str
+    salt: str
     group: Group

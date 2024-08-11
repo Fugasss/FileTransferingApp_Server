@@ -1,7 +1,8 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.apps.admin.routes import login
+from src.apps import admin
+from src.apps.admin.routes import login, registration
 
 
 allowed_origins = [
@@ -19,3 +20,4 @@ admin_app.add_middleware(CORSMiddleware,
                          allow_methods=["*"],
                          allow_headers=["*"])
 admin_app.include_router(login.router)
+admin_app.include_router(registration.router)

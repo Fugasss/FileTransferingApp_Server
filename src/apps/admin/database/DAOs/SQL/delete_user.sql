@@ -1,2 +1,2 @@
 DELETE FROM users
-WHERE id=%s;
+WHERE id=?;

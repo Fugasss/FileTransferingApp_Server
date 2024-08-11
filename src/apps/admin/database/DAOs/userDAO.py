@@ -1,7 +1,7 @@
 ﻿from src.apps.admin.database.models.user import User
 from src.apps.admin.database.models.group import Group
 from src.apps.admin.security import hasher
-from src.apps.common.database.utils import execute_and_fetchall, execute_and_fetchone
+from src.apps.common.database.db_utils import execute_and_fetchone, execute_and_fetchall
 from src.apps.common.database.connection import get_cursor
 from src.apps.admin.database.DAOs.groupDAO import get_group_by_id
 from src.apps.common.database.utils import read_sql_file
@@ -12,8 +12,8 @@ def get_all_users() -> tuple[User]:
     data = execute_and_fetchall('select_all_users.sql')
 
     for row in data:
-        group = get_group_by_id(row[3])
-        user = User(id=row[0], login=row[1], password=row[2], group=group)
+        group = get_group_by_id(row[4])
+        user = User(id=row[0], login=row[1], password=row[2], salt=row[3], group=group)
         users.append(user)
 
     return tuple(*users)
@@ -25,8 +25,8 @@ def get_user_by_login(login) -> User | None:
     if data is None:
         return None
 
-    group = get_group_by_id(data[3])
-    return User(id=data[0], login=data[1], password=data[2], group=group)
+    group = get_group_by_id(data[4])
+    return User(id=data[0], login=data[1], password=data[2], salt=data[3], group=group)
 
 
 def create_user(login: str, password: str, group: Group) -> (User | None, bool):
