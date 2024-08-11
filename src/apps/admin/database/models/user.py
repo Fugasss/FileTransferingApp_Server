@@ -1,5 +1,4 @@
 ﻿from pydantic import BaseModel
-
 from src.apps.admin.database.models.group import Group
 
 
