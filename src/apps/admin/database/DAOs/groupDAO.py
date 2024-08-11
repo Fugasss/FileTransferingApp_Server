@@ -56,3 +56,52 @@ def create_group(name: str, rights: Rights) -> (Group | None, bool):
 
     finally:
         cursor.close()
+
+
+def update_group(id: int, groupname: str, rights: str) -> bool:
+
+    params = (groupname, Rights(rights), id)
+
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(read_sql_file('update_group.sql'), params)
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return True
+
+
+def delete_group_by_id(id: int) -> bool:
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(read_sql_file('delete_group_by_id.sql'), (id,))
+
+    except Exception as e:
+        print(e)
+        return False
+
+    else:
+        return True
+
+    finally:
+        cursor.close()
+
+
+def delete_group_by_name(name: str) -> bool:
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(read_sql_file('delete_group_by_name.sql'), (name,))
+
+    except Exception as e:
+        print(e)
+        return False
+
+    else:
+        return True
+
+    finally:
+        cursor.close()

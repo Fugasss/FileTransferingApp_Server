@@ -2,8 +2,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.apps import admin
-from src.apps.admin.routes import login, registration
-from src.apps.admin.routes import upload
+from src.apps.admin.routes import login, registration, upload, users, groups
+
 
 
 allowed_origins = [
@@ -23,3 +23,5 @@ admin_app.add_middleware(CORSMiddleware,
 admin_app.include_router(login.router)
 admin_app.include_router(registration.router)
 admin_app.include_router(upload.router)
+admin_app.include_router(users.router)
+admin_app.include_router(groups.router)

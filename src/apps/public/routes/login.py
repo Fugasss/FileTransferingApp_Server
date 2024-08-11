@@ -11,7 +11,6 @@ router = APIRouter()
 
 @router.post('/login')
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    print("login user")
     user = get_user_by_login(username)
 
     if user is None:
