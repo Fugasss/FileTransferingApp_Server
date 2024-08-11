@@ -1,40 +1,34 @@
-DO
-$$
-    BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'rights') THEN
-            CREATE TYPE Rights AS ENUM ('Read-Only', 'Read-Write', 'Full');
-        END IF;
-    END
-$$;
-
 CREATE TABLE IF NOT EXISTS Groups
 (
-    ID            SERIAL,
-    Name          VARCHAR(50),
-    CurrentRights RIGHTS,
-    UNIQUE (Name),
-    PRIMARY KEY (ID)
+    ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name          TEXT NOT NULL UNIQUE,
+    CurrentRights TEXT NOT NULL CHECK (CurrentRights in ('Read-Only', 'Read-Write', 'Full'))
 );
 
 CREATE TABLE IF NOT EXISTS Users
 (
-    ID       SERIAL,
-    Login    VARCHAR(50),
-    Password VARCHAR(256),
-    Salt     VARCHAR(256),
-    GroupID  INT,
-    PRIMARY KEY (ID),
-    UNIQUE (Login),
+    ID       INTEGER PRIMARY KEY AUTOINCREMENT,
+    Login    TEXT NOT NULL UNIQUE,
+    Password TEXT NOT NULL,
+    Salt     TEXT NOT NULL,
+    GroupID  INT ,
     FOREIGN KEY (GroupID) REFERENCES Groups (ID)
 );
 
 CREATE TABLE IF NOT EXISTS Sessions
 (
-    ID        SERIAL,
-    UserID    INT,
-    Device    VARCHAR(100),
+    ID        INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID    INTEGER ,
+    Device    TEXT,
     StartDate TIMESTAMP,
     IsActive  BOOLEAN,
-    PRIMARY KEY (ID),
     FOREIGN KEY (UserID) REFERENCES Users (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Files
+(
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FileName TEXT NOT NULL UNIQUE,
+    Size INT NOT NULL,
+    Data BLOB NOT NULL
 );

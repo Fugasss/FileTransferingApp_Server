@@ -1,66 +1,39 @@
-import os
-
-import dotenv
-import psycopg2 as pg
-from psycopg2._psycopg import cursor
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
+import sqlite3.dbapi2 as sqlite
+import contextlib
+from src import settings
 from src.apps.common.database.utils import read_sql_file
 
-__connection: pg._psycopg.connection | None = None
-
-
-def __database_exists(cursor, name: str) -> bool:
-    cursor.execute(f'''
-            SELECT exists(
-                SELECT datname FROM pg_catalog.pg_database WHERE datname = %s
-            );
-    ''', (name,))
-
-    return cursor.fetchone()[0]
-
-
-def __create_database(cursor, name: str):
-    cursor.execute('''
-                CREATE DATABASE "{}" WITH
-                OWNER = postgres
-                ENCODING = 'UTF8'
-            '''.format(name))
+__connection: sqlite.Connection | None = None
 
 
 def __create_tables(cursor):
-    cursor.execute(read_sql_file('SQL/create_necessary_tables.sql'))
+    cursor.executescript(read_sql_file('create_necessary_tables.sql'))
+    cursor.executescript(read_sql_file('insert_necessary_data.sql'))
 
 
 def get_or_create_connection():
     global __connection
 
-    name = os.environ.get("SQL_DATABASE_NAME", 'FileTransferingApp')
-    host = os.environ.get("SQL_HOST", 'localhost')
-    port = os.environ.get("SQL_PORT", '5432')
-    user = os.environ.get("SQL_USER", 'postgres')
-    password = os.environ.get("SQL_PASSWORD", 'postgres')
-
     if __connection is None:
-        conn = pg.connect(host=host, port=port, user=user, password=password)
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        conn.autocommit = True
+        options = settings.DATABASE_CONNECTION_OPTIONS
+        name = options['NAME']
 
-        cursor = conn.cursor()
+        __connection = sqlite.connect(database=name, isolation_level="IMMEDIATE", check_same_thread=False)
 
-        if not __database_exists(cursor, name):
-            __create_database(cursor, name)
-
-        cursor.close()
-        conn.close()
-
-        __connection = pg.connect(database=name, host=host, port=port, user=user, password=password)
-        __connection.autocommit = True
-
-        with __connection.cursor() as cursor:
-            __create_tables(cursor)
+        with contextlib.closing(__connection.cursor()) as cursor:
+            cursor.execute(read_sql_file('check_for_tables_existance.sql'))
+            value = cursor.fetchone()
+            
+            if value[0] == 0:
+                __create_tables(cursor)
 
     return __connection
+
+
+def close_connection():
+    global __connection
+    __connection.commit()
+    __connection.close()
 
 
 def get_cursor():
@@ -68,8 +41,3 @@ def get_cursor():
     if conn is None:
         return
     return conn.cursor()
-
-
-if __name__ == '__main__':
-    dotenv.load_dotenv("./.env")
-    get_cursor()
