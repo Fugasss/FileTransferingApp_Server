@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Form
 from starlette import status
+from starlette.requests import Request
 
 from starlette.responses import JSONResponse
 from fastapi import HTTPException
@@ -30,7 +31,7 @@ def get_user(id: int):
 
 
 @router.get('/users')
-def get_all_users():
+def get_all_users(request: Request):
     return get_all_users_dao()
 
 
