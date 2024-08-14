@@ -1,7 +1,4 @@
-import contextlib
 import os
-import sqlite3
-import dotenv
 import pytest
 
 from src.apps.admin.database.models.rights import Rights
@@ -20,11 +17,17 @@ def teardown():
     os.remove(TEST_DB_FILE_NAME)
 
 
-def test_admin_create_user():
+def test_admin_create_and_get_user():
     group, created = groupDAO.create_group('test', rights=Rights.FULL)
 
     if not created:
         pytest.fail('Failed to create group')
 
-    userDAO.create_user('test', 'test', group)
-    
+    user, created = userDAO.create_user('test', 'test', group)
+
+    if not created:
+        pytest.fail('Failed to create user')
+
+    assert user.login == 'test'
+    assert user.group.name == 'test'
+    assert user.group.rights == Rights.FULL
