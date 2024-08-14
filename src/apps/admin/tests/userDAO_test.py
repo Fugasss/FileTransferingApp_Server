@@ -1,27 +1,33 @@
-# from fastapi.testclient import TestClient
-# from unittest.mock import patch, MagicMock
-# import psycopg2
-# 
-# from src import settings
-# from src.apps.admin.database.DAOs.userDAO import get_all_users
-# 
-# 
-# class TestDatabaseFunction(TestClient):
-# 
-#     @patch('psycopg2.connect')
-#     def setUp(self, mock_connect):
-#         self.mock_connection = MagicMock()
-#         self.mock_cursor = MagicMock()
-# 
-#         mock_connect.return_value = self.mock_connection
-#         self.mock_connection.cursor.return_value = self.mock_cursor
-# 
-#     def test_create_users(self):
-#         # expected_data = tuple()
-#         # self.mock_cursor.fetchall.return_value = expected_data
-#         # 
-#         # result = get_all_users()
-#         # self.assertEqual(result, expected_data)
-#         pass
-# 
-# 
+import os
+import pytest
+
+from src.apps.admin.database.models.rights import Rights
+from src.apps.common.database.connection import get_cursor, close_connection, get_or_create_connection
+from src.apps.admin.database.DAOs import userDAO, groupDAO
+
+TEST_DB_FILE_NAME = 'test.db'
+
+
+def setup():
+    get_or_create_connection(TEST_DB_FILE_NAME)
+
+
+def teardown():
+    close_connection()
+    os.remove(TEST_DB_FILE_NAME)
+
+
+def test_admin_create_and_get_user():
+    group, created = groupDAO.create_group('test', rights=Rights.FULL)
+
+    if not created:
+        pytest.fail('Failed to create group')
+
+    user, created = userDAO.create_user('test', 'test', group)
+
+    if not created:
+        pytest.fail('Failed to create user')
+
+    assert user.login == 'test'
+    assert user.group.name == 'test'
+    assert user.group.rights == Rights.FULL

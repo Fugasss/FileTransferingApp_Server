@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Form
 from starlette import status
+from starlette.requests import Request
 
 from starlette.responses import JSONResponse
 from fastapi import HTTPException
@@ -30,7 +31,7 @@ def get_user(id: int):
 
 
 @router.get('/users')
-def get_all_users():
+def get_all_users(request: Request):
     return get_all_users_dao()
 
 
@@ -56,7 +57,7 @@ def update_user(id: int, username: Annotated[str, Form()], password: Annotated[s
         return JSONResponse('User update failed', status_code=404)
 
 
-@router.delete('/users/{id}', status_code=status.HTTP_200_OK)
+@router.delete('/users/id', status_code=status.HTTP_200_OK)
 def delete_user_by_id(id: int):
     if delete_user_by_id_dao(id):
         return JSONResponse({'status': 'ok'}, status_code=200)
@@ -64,7 +65,7 @@ def delete_user_by_id(id: int):
         return JSONResponse('User deletion failed', status_code=404)
 
 
-@router.delete('/users/{login}', status_code=status.HTTP_200_OK)
+@router.delete('/users/name', status_code=status.HTTP_200_OK)
 def delete_user_by_login(login: str):
     if delete_user_by_login_dao(login):
         return JSONResponse({'status': 'ok'}, status_code=200)
