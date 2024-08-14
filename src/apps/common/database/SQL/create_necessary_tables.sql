@@ -14,13 +14,3 @@ CREATE TABLE IF NOT EXISTS Users
     GroupID  INT ,
     FOREIGN KEY (GroupID) REFERENCES Groups (ID)
 );
-
-CREATE TABLE IF NOT EXISTS Sessions
-(
-    ID        INTEGER PRIMARY KEY AUTOINCREMENT,
-    UserID    INTEGER ,
-    Device    TEXT,
-    StartDate TIMESTAMP,
-    IsActive  BOOLEAN,
-    FOREIGN KEY (UserID) REFERENCES Users (ID)
-);
