@@ -1,6 +1,6 @@
 ﻿from fastapi import FastAPI
 
-from src.apps.public.routes import login, upload, download, files
+from src.apps.public.routes import login, files
 
 public_app = FastAPI(description="Can be accessed from any origin", title="Public API")
 
