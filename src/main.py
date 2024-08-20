@@ -7,7 +7,6 @@ from src.apps.admin.admin import admin_app
 from src.apps.common.database.connection import get_cursor, close_connection
 from src.apps.common.middlewares.JWTMiddleware import JWTMiddleware
 from src.apps.public.public import public_app
-from dotenv import load_dotenv
 
 
 @asynccontextmanager
