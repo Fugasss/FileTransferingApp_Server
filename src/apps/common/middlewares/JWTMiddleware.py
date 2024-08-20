@@ -1,7 +1,13 @@
+import time
+from datetime import datetime
+
 import jwt
 
 from fastapi import Request, HTTPException
+from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response, JSONResponse
+
 import src.apps.common.security.jwt as jwt_sec
 from src.settings import JWT_SECRET_KEY, JWT_ALGORITHM
 
@@ -13,7 +19,9 @@ class JWTMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         if request.url.path in self.exclude_endpoints:
-            print('Ignoring jwt middleware')
+            return await call_next(request)
+
+        if request.method == 'OPTIONS':
             return await call_next(request)
 
         auth_header = request.headers.get('authorization')
@@ -23,13 +31,21 @@ class JWTMiddleware(BaseHTTPMiddleware):
                 token = auth[1]
                 try:
                     payload = jwt_sec.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+
+                    if time.time() >= payload.expires:
+                        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                                            content={'message': 'Token is expired'})
+
                     request.state.user = payload
                 except jwt.ExpiredSignatureError:
-                    raise HTTPException(status_code=401, detail="Token has expired")
+                    return Response(status_code=status.HTTP_401_UNAUTHORIZED, media_type='application/json',
+                                    content={'message': 'Token is expired'})
                 except jwt.InvalidTokenError:
-                    raise HTTPException(status_code=401, detail="Invalid token")
+                    return Response(status_code=status.HTTP_401_UNAUTHORIZED, media_type='application/json',
+                                    content={'message': 'Invalid token'})
         else:
-            raise HTTPException(status_code=401, detail="Authorization header missing")
+            return Response(status_code=status.HTTP_401_UNAUTHORIZED, media_type='application/json',
+                            content={'message': 'Authorization header is missing'})
 
         response = await call_next(request)
 

@@ -4,6 +4,7 @@ from starlette.requests import Request
 
 from src.apps.admin.database.models.rights import Rights
 from src.apps.admin.routes import login, registration, users, groups
+from src.apps.common.middlewares.JWTMiddleware import JWTMiddleware
 
 allowed_origins = [
     "http://localhost:5173",
@@ -17,6 +18,7 @@ admin_app.add_middleware(CORSMiddleware,
                          allow_credentials=True,
                          allow_methods=["*"],
                          allow_headers=["*"])
+
 
 admin_app.include_router(login.router)
 admin_app.include_router(registration.router)
