@@ -1,7 +1,6 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.apps.common.middlewares.JWTMiddleware import JWTMiddleware
 from src.apps.public.routes import login, files
 
 allowed_origins = [
