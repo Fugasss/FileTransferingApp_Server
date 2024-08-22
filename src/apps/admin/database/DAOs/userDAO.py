@@ -8,8 +8,10 @@ from src.apps.common.database.utils import read_sql_file
 
 
 def get_all_users() -> tuple[User, ...]:
+    file = 'select_all_users.sql'
+
     users: list[User] = []
-    data = execute_and_fetchall('select_all_users.sql')
+    data = execute_and_fetchall(file)
 
     for row in data:
         group = get_group_by_id(row[4])
@@ -20,7 +22,10 @@ def get_all_users() -> tuple[User, ...]:
 
 
 def get_user_by_login(login) -> User | None:
-    data = execute_and_fetchone('select_user_by_login.sql', (login,))
+    file = 'select_user_by_login.sql'
+    params = (login,)
+
+    data = execute_and_fetchone(file, params)
 
     if data is None:
         return None
@@ -30,7 +35,10 @@ def get_user_by_login(login) -> User | None:
 
 
 def get_user_by_id(id) -> User | None:
-    data = execute_and_fetchone('select_user_by_id.sql', (id,))
+    file = 'select_user_by_id.sql'
+    params = (id,)
+
+    data = execute_and_fetchone(file, params)
 
     if data is None:
         return None
@@ -40,11 +48,13 @@ def get_user_by_id(id) -> User | None:
 
 
 def create_user(login: str, password: str, group: Group) -> (User | None, bool):
+    file = 'create_user.sql'
+
     cursor = get_cursor()
 
     try:
         salt, hashed_password = hasher.hash_password(password)
-        cursor.execute(read_sql_file('create_user.sql'), (login, hashed_password, salt, group.id))
+        cursor.execute(read_sql_file(file), (login, hashed_password, salt, group.id))
 
     except Exception as e:
         print(e)
@@ -58,6 +68,8 @@ def create_user(login: str, password: str, group: Group) -> (User | None, bool):
 
 
 def update_user(id: int, login: str, password: str, groupname: str) -> bool:
+    file = 'update_user.sql'
+
     salt, hashed_password = hasher.hash_password(password)
 
     params = (login, hashed_password, salt, get_group_by_name(groupname).id, id)
@@ -65,7 +77,7 @@ def update_user(id: int, login: str, password: str, groupname: str) -> bool:
     cursor = get_cursor()
 
     try:
-        cursor.execute(read_sql_file('update_user.sql'), params)
+        cursor.execute(read_sql_file(file), params)
     except Exception as e:
         print(e)
         return False
@@ -74,10 +86,12 @@ def update_user(id: int, login: str, password: str, groupname: str) -> bool:
 
 
 def delete_user_by_id(id: int) -> bool:
+    file = 'delete_user_by_id.sql'
+
     cursor = get_cursor()
 
     try:
-        cursor.execute(read_sql_file('delete_user_by_id.sql'), (id,))
+        cursor.execute(read_sql_file(file), (id,))
 
     except Exception as e:
         print(e)
@@ -91,10 +105,12 @@ def delete_user_by_id(id: int) -> bool:
 
 
 def delete_user_by_login(login: str) -> bool:
+    file = 'delete_user_by_login.sql'
+
     cursor = get_cursor()
 
     try:
-        cursor.execute(read_sql_file('delete_user_by_login.sql'), (login,))
+        cursor.execute(read_sql_file(file), (login,))
 
     except Exception as e:
         print(e)
