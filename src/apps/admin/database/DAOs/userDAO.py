@@ -64,6 +64,7 @@ def create_user(login: str, password: str, group: Group) -> (User | None, bool):
         return get_user_by_login(login), True
 
     finally:
+        cursor.connection.commit()
         cursor.close()
 
 
@@ -84,6 +85,30 @@ def update_user(id: int, login: str, password: str, groupname: str) -> bool:
     else:
         return True
 
+    finally:
+        cursor.connection.commit()
+        cursor.close()
+
+
+def update_user_group(id: int, groupname: str) -> bool:
+    file = 'update_user_group.sql'
+
+    params = (get_group_by_name(groupname).id, id)
+
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(read_sql_file(file), params)
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return True
+
+    finally:
+        cursor.connection.commit()
+        cursor.close()
+
 
 def delete_user_by_id(id: int) -> bool:
     file = 'delete_user_by_id.sql'
@@ -101,6 +126,7 @@ def delete_user_by_id(id: int) -> bool:
         return True
 
     finally:
+        cursor.connection.commit()
         cursor.close()
 
 
@@ -120,4 +146,5 @@ def delete_user_by_login(login: str) -> bool:
         return True
 
     finally:
+        cursor.connection.commit()
         cursor.close()
