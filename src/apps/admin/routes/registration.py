@@ -16,5 +16,5 @@ def register_user(username: Annotated[str, Form()], password: Annotated[str, For
 
     if created:
         return JSONResponse([{"message": "User created successfully"}])
-
-    return JSONResponse([{"message": "User already exists"}])
+    else:
+        return JSONResponse([{"message": "User already exists"}])
