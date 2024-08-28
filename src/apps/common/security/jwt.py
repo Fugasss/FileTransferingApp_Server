@@ -1,5 +1,6 @@
 import dataclasses
 import json
+from datetime import datetime
 from typing import Any, Dict
 
 import jwt
@@ -12,6 +13,7 @@ class Payload:
     username: str
     password: str
     group: Group
+    expires: float
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -20,8 +22,9 @@ class Payload:
             "group": {
                 "id": str(self.group.id),
                 "name": self.group.name,
-                "rights": str(self.group.rights)
+                "rights": str(self.group.rights),
             },
+            "expires": self.expires,
         }
 
 
@@ -35,4 +38,5 @@ def encode(payload: Payload,
 def decode(token: str,
            key: Any = "",
            algorithms: list[str] | None = None) -> Payload:
-    return jwt.decode(token, key=key, algorithms=algorithms)
+    data = jwt.decode(token, key=key, algorithms=algorithms)
+    return Payload(**data)

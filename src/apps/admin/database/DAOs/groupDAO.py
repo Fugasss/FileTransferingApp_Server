@@ -56,6 +56,7 @@ def create_group(name: str, rights: Rights) -> (Group | None, bool):
         return get_group_by_name(name), True
 
     finally:
+        cursor.connection.commit()
         cursor.close()
 
 
@@ -72,6 +73,9 @@ def update_group(id: int, groupname: str, rights: str) -> bool:
         return False
     else:
         return True
+    finally:
+        cursor.connection.commit()
+        cursor.close()
 
 
 def delete_group_by_id(id: int) -> bool:
@@ -89,6 +93,7 @@ def delete_group_by_id(id: int) -> bool:
         return True
 
     finally:
+        cursor.connection.commit()
         cursor.close()
 
 
@@ -107,4 +112,5 @@ def delete_group_by_name(name: str) -> bool:
         return True
 
     finally:
+        cursor.connection.commit()
         cursor.close()

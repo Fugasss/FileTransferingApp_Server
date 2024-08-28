@@ -6,6 +6,6 @@ from src.apps.admin.database.models.group import Group
 class User:
     id: int
     login: str
-    password: str
+    hashed_password: str
     salt: str
     group: Group
