@@ -3,11 +3,15 @@ import dotenv
 
 dotenv.load_dotenv(".env")
 
-BASE_DIR: pathlib.Path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR: pathlib.Path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)))
+
+PROJECT_DIR = os.path.join(SRC_DIR.parent)
+
+FILES_DIR = os.path.join(PROJECT_DIR, 'files')
 
 SQL_DIRS = [
-    BASE_DIR / "apps/admin/database/DAOs/SQL",
-    BASE_DIR / "apps/common/database/SQL",
+    SRC_DIR / "apps/admin/database/DAOs/SQL",
+    SRC_DIR / "apps/common/database/SQL",
 ]
 
 DATABASE_CONNECTION_OPTIONS = {

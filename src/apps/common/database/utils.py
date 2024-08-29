@@ -24,18 +24,15 @@ def read_sql_file(sql_file):
         return f.read()
 
 
-def list_of_all_files(path: str) -> []:
+def list_of_all_files(path: str) -> list[str]:
     try:
-
         all_items = os.listdir(path)
         files = [item for item in all_items if os.path.isfile(os.path.join(path, item))]
 
         if ".gitkeep" in files:
             files.remove(".gitkeep")
-        return files
 
-    except FileNotFoundError:
-        raise FileNotFoundError
+        return files
 
     except Exception as e:
         raise e
@@ -47,7 +44,7 @@ def is_in_files(filename: str, path: str) -> bool:
 
 def delete_file(filename: str, path: str) -> bool:
     if is_in_files(filename, path):
-        os.remove(path + filename)
+        os.remove(os.path.join(path, filename))
         return True
     else:
         return False
