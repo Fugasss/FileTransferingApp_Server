@@ -13,6 +13,7 @@ admin_app = FastAPI(
     description="Can be accessed only from local machine",
     title="Admin API",
     dependencies=[Depends(verify_jwt_token), Depends(verify_full_rights)],
+    openapi_prefix="/admin",
 )
 
 

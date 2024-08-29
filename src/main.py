@@ -16,8 +16,13 @@ async def lifespan(app: FastAPI):
 
     close_connection()
 
+description = f"## Welcome to the FTA\nHere are links to the documentation of sub-applications:\n- [Admin](http://localhost:8080/admin/docs)\n- [Public](http://localhost:8080/public/docs)"
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan,
+              version='1.0.0',
+              title="FTA's docs",
+              description=description,
+              )
 
 app.mount('/admin', admin_app)
 app.mount('/', public_app)
