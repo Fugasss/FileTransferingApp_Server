@@ -6,7 +6,9 @@ from src.apps.public.routes import login, files
 allowed_origins = [
     '*'
 ]
-public_app = FastAPI(description="Can be accessed from any origin", title="Public API")
+public_app = FastAPI(description="Can be accessed from any origin",
+                     title="Public API",
+                     openapi_prefix="/public",)
 
 public_app.add_middleware(CORSMiddleware,
                           allow_origins=allowed_origins,

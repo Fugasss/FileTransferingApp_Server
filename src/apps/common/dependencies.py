@@ -8,7 +8,6 @@ from typing import Annotated
 from src.apps.admin.database.DAOs import userDAO as usersDB
 from src.apps.admin.database.models.rights import Rights
 from src.apps.admin.database.models.user import User
-from src.apps.admin.security import hasher
 from src.settings import JWT_SECRET_KEY, JWT_ALGORITHM
 
 import src.apps.common.security.jwt as jwt_sec
