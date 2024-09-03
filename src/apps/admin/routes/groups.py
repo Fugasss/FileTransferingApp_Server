@@ -1,3 +1,5 @@
+from tokenize import group
+
 from fastapi import HTTPException
 from typing import Annotated
 
@@ -47,6 +49,10 @@ def update_group(id: int,
                  groupname: Annotated[str, Form()],
                  rights: Annotated[Rights, Form()],
                  ):
+
+    if groupDAO.get_group_by_id(id) is None:
+        raise HTTPException(status_code=404, detail='Group not found')
+
     if groupDAO.update_group(id, groupname, Rights(rights)):
         return groupDAO.get_group_by_id(id)
     else:

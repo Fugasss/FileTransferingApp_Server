@@ -1,21 +1,16 @@
-import os
 import pytest
 
 from src.apps.admin.database.models.rights import Rights
-from src.apps.common.database.connection import close_connection, get_or_create_connection
 from src.apps.admin.database.DAOs import userDAO, groupDAO
-
-TEST_DB_FILE_NAME = 'test.db'
+from .test_utils import create_test_db, destroy_test_db, clear_db
 
 
 @pytest.fixture(scope="module", autouse=True)
 def setup():
-    get_or_create_connection(TEST_DB_FILE_NAME)
-
+    create_test_db()
+    clear_db()
     yield
-
-    close_connection()
-    os.remove(TEST_DB_FILE_NAME)
+    destroy_test_db()
 
 
 @pytest.mark.dependency()
