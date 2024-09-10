@@ -16,7 +16,7 @@ router = APIRouter(
 FILES_PATH = "files/"
 
 
-@router.get('/')
+@router.get('/page')
 async def get_files(p: Annotated[int | None, Query(description="number of page")] = None):
     all_files = list_of_all_files(FILES_PATH)
     all_files.sort()
@@ -27,7 +27,12 @@ async def get_files(p: Annotated[int | None, Query(description="number of page")
         return JSONResponse({"error": "No Files Found"}, status_code=404)
 
 
-@router.get("/filename}")
+@router.get('/')
+async def get_all_files():
+    return sorted(list_of_all_files(FILES_PATH))
+
+
+@router.get("/{filename}")
 async def download(filename: str):
     if is_in_files(filename, FILES_PATH):
         return FileResponse(path=FILES_PATH + filename)
