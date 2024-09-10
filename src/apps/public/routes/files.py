@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/')
+@router.get('/page')
 async def get_files(p: Annotated[int | None, Query(description="number of page")] = None):
     all_files = list_of_all_files(FILES_DIR)
     all_files.sort()
@@ -26,6 +26,11 @@ async def get_files(p: Annotated[int | None, Query(description="number of page")
         return JSONResponse(all_files, status_code=200)
     else:
         raise HTTPException(status_code=404)
+
+
+@router.get('/')
+async def get_all_files():
+    return sorted(list_of_all_files(FILES_DIR))
 
 
 @router.get("/{filename}")
