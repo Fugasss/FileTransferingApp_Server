@@ -1,3 +1,6 @@
+from tokenize import group
+
+from fastapi import HTTPException
 from typing import Annotated
 
 from fastapi import APIRouter, Form
@@ -16,7 +19,7 @@ def get_group(id: int):
     group = groupDAO.get_group_by_id(id)
 
     if group is None:
-        return JSONResponse('Group not found', status_code=404)
+        raise HTTPException(status_code=404, detail='Group not found')
     else:
         return group
 
@@ -27,37 +30,40 @@ def get_groups():
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def add_group(groupname: Annotated[str, Form()], rights: Annotated[Rights, Form()]):
+def add_group(groupname: Annotated[str, Form()],
+              rights: Annotated[Rights, Form()],
+              ):
     if rights in list(Rights):
         group, created = groupDAO.create_group(groupname, Rights(rights))
 
         if created:
             return group
         else:
-            return JSONResponse('Group creation failed', status_code=404)
+            raise HTTPException(status_code=404, detail='Group creation failed')
     else:
-        return JSONResponse('No such Rights', status_code=404)
+        raise HTTPException(status_code=404, detail=f'No such rights: {rights}')
 
 
 @router.put('/{id}', status_code=status.HTTP_200_OK)
-def update_group(id: int, groupname: Annotated[str, Form()], rights: Annotated[Rights, Form()]):
+def update_group(id: int,
+                 groupname: Annotated[str, Form()],
+                 rights: Annotated[Rights, Form()],
+                 ):
+
+    if groupDAO.get_group_by_id(id) is None:
+        raise HTTPException(status_code=404, detail='Group not found')
+
     if groupDAO.update_group(id, groupname, Rights(rights)):
         return groupDAO.get_group_by_id(id)
     else:
-        return JSONResponse('Update group failed', status_code=404)
+        raise HTTPException(status_code=404, detail='Group update failed')
 
 
-@router.delete('/id', status_code=status.HTTP_200_OK)
-def delete_group_by_id(id: int):
-    if groupDAO.delete_group_by_id(id):
+@router.delete('/{id_or_name}', status_code=status.HTTP_200_OK)
+def delete_group_by_id_or_name(id_or_name: int | str):
+    delete_group = groupDAO.delete_group_by_id if id_or_name.isdigit() else groupDAO.delete_group_by_name
+
+    if delete_group(id_or_name):
         return JSONResponse('group deleted')
     else:
-        return JSONResponse('Group for deletion not found', status_code=404)
-
-
-@router.delete('/name', status_code=status.HTTP_200_OK)
-def delete_group_by_id(name: str):
-    if groupDAO.delete_group_by_name(name):
-        return JSONResponse('group deleted')
-    else:
-        return JSONResponse('Group for deletion not found', status_code=404)
+        raise HTTPException(status_code=404, detail='Group not found')

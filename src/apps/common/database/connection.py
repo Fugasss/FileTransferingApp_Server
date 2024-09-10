@@ -35,6 +35,7 @@ def close_connection():
     global __connection
     __connection.commit()
     __connection.close()
+    __connection = None
 
 
 def get_cursor() -> sqlite3.Cursor | None:

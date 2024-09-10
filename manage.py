@@ -1,6 +1,4 @@
 import argparse
-import os
-import sys
 
 from src.apps.admin.database.DAOs import userDAO, groupDAO
 from src.apps.admin.database.models.rights import Rights
@@ -31,7 +29,6 @@ def add_user(login: str, password: str, groupname: str):
             print(f'User {login} already exists')
 
 
-
 def list_users():
     users = userDAO.get_all_users()
     for user in users:
@@ -53,7 +50,6 @@ def remove_user(id: int):
 
 
 def change_user_group(id: int, groupname: str):
-
     group = groupDAO.get_group_by_name(groupname)
 
     if group is None:
