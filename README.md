@@ -34,3 +34,5 @@ For PowerShell:
 ```
 python -m pip install -r .\requirements.txt
 ```
+## Client for working with files on the server:
+https://github.com/WhyNovaa/FileTransferingApp_DesktopClient
