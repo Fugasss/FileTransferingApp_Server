@@ -31,7 +31,7 @@ async def get_files(p: Annotated[int | None, Query(description="number of page")
 @router.get("/{filename}")
 async def download(filename: str):
     if is_in_files(filename, FILES_DIR):
-        return FileResponse(path=FILES_DIR + filename)
+        return FileResponse(path=os.path.join(FILES_DIR, filename))
     else:
         raise HTTPException(status_code=404, detail='File not found')
 
