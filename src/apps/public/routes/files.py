@@ -8,6 +8,7 @@ import shutil
 from src.settings import FILES_DIR
 from src.apps.common.database.utils import list_of_all_files, is_in_files, delete_file
 from src.apps.common.dependencies import verify_jwt_token
+from src.apps.admin.database.models.filelist import FileList
 
 router = APIRouter(
     prefix="/files",
@@ -62,3 +63,17 @@ async def delete(filename: str):
         return Response(status_code=200)
     else:
         raise HTTPException(status_code=404, detail='File not found')
+
+
+@router.delete('/')
+async def delete_files(file_list: FileList):
+    not_found_files = []
+
+    for filename in file_list.filenames:
+        if not delete_file(filename, FILES_DIR):
+            not_found_files.append(filename)
+
+    if not_found_files:
+        raise HTTPException(status_code=404, detail=f"Files not found: {', '.join(not_found_files)}")
+
+    return Response(status_code=200)
