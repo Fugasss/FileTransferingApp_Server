@@ -66,10 +66,10 @@ async def delete(filename: str):
 
 
 @router.delete('/')
-async def delete_files(file_list: FileList):
+async def delete_files(file_list: List[str]):
     not_found_files = []
 
-    for filename in file_list.filenames:
+    for filename in file_list:
         if not delete_file(filename, FILES_DIR):
             not_found_files.append(filename)
 
