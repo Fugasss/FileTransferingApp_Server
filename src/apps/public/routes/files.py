@@ -8,7 +8,6 @@ import shutil
 from src.settings import FILES_DIR
 from src.apps.common.database.utils import list_of_all_files, is_in_files, delete_file
 from src.apps.common.dependencies import verify_jwt_token
-from src.apps.admin.database.models.filelist import FileList
 
 router = APIRouter(
     prefix="/files",
