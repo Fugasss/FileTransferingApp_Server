@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/')
+@router.get('/page')
 async def get_files(p: Annotated[int | None, Query(description="number of page")] = None):
     all_files = list_of_all_files(FILES_DIR)
     all_files.sort()
@@ -28,10 +28,15 @@ async def get_files(p: Annotated[int | None, Query(description="number of page")
         raise HTTPException(status_code=404)
 
 
+@router.get('/')
+async def get_all_files():
+    return sorted(list_of_all_files(FILES_DIR))
+
+
 @router.get("/{filename}")
 async def download(filename: str):
     if is_in_files(filename, FILES_DIR):
-        return FileResponse(path=FILES_DIR + filename)
+        return FileResponse(path=os.path.join(FILES_DIR, filename))
     else:
         raise HTTPException(status_code=404, detail='File not found')
 
@@ -57,3 +62,17 @@ async def delete(filename: str):
         return Response(status_code=200)
     else:
         raise HTTPException(status_code=404, detail='File not found')
+
+
+@router.delete('/')
+async def delete_files(file_list: List[str]):
+    not_found_files = []
+
+    for filename in file_list:
+        if not delete_file(filename, FILES_DIR):
+            not_found_files.append(filename)
+
+    if not_found_files:
+        raise HTTPException(status_code=404, detail=f"Files not found: {', '.join(not_found_files)}")
+
+    return Response(status_code=200)

@@ -1,6 +1,4 @@
-﻿import pathlib
-
-from src.apps.admin.database.models.group import Group
+﻿from src.apps.admin.database.models.group import Group
 from src.apps.common.database.db_utils import execute_and_fetchone, execute_and_fetchall
 from src.apps.common.database.connection import get_cursor
 from src.apps.common.database.utils import read_sql_file
@@ -41,7 +39,7 @@ def get_group_by_name(name: str) -> Group | None:
     return Group(id=value[0], name=value[1], rights=value[2])
 
 
-def create_group(name: str, rights: Rights) -> (Group | None, bool):
+def create_group(name: str, rights: Rights) -> tuple[Group | None, bool]:
     file = 'create_group.sql'
     cursor = get_cursor()
 
