@@ -55,6 +55,6 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
 
-        return JSONResponse({"message": "Login successful", 'token': token}, status_code=200)
+        return JSONResponse({"message": "Login successful", 'token': token, 'jwt_exp_seconds': str(JWT_TOKEN_EXPIRE_SECONDS)}, status_code=200)
     else:
         raise HTTPException(status_code=403, detail='Wrong Credentials')
